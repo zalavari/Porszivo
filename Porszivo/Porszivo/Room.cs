@@ -45,7 +45,12 @@ namespace Porszivo
             throw new System.NotImplementedException();
         }
 
-        public void moveRobot(Direction direction)
+        public Direction moveRobot(Direction direction)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void setFieldType()
         {
             throw new System.NotImplementedException();
         }

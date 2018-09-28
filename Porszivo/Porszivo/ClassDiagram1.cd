@@ -3,7 +3,7 @@
   <Class Name="Porszivo.Room">
     <Position X="1.25" Y="2.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>MAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>MAAAAAAAAAAAAEAAAAAAAAAABAAAAAAAAAAAAAQAAAA=</HashCode>
       <FileName>Room.cs</FileName>
     </TypeIdentifier>
   </Class>
