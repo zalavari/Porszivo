@@ -15,6 +15,16 @@ namespace Porszivo
         public Form1()
         {
             InitializeComponent();
+            InitializeSimulation();
+        }
+
+        private void InitializeSimulation()
+        {
+            Room room = new Room();            
+            ProximitySensor prSens = new ProximitySensor(room);
+            DrivingUnit drivingUnit = new DrivingUnit(room);
+
+            Robot robot = new Robot(prSens, drivingUnit);
         }
     }
 }
