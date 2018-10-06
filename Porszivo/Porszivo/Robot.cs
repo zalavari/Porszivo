@@ -63,11 +63,12 @@ namespace Porszivo
         {
             Direction direction = Direction.DOWN;
             bool moved = false;
+            Random rnd = new Random(0);
             while (!moved)
             {
-                //TODO: hogyan kell véletlen számot generálni C#-ban
-                int random = 1; //0 - 3
-                switch (random)
+                // véletlen irány generálása
+                int nextDirection = rnd.Next(0, 3); 
+                switch (nextDirection)
                 {
                     case 0: direction = Direction.UP; break;
                     case 1: direction = Direction.RIGHT; break;
