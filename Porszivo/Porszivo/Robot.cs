@@ -232,7 +232,7 @@ namespace Porszivo
 
         public FieldType getFieldType(int x, int y)
         {
-            Room.getFieldType(x, y);
+            return Room.getFieldType(x, y);
         }
 
         public void setFieldType(int x, int y, FieldType ft)
