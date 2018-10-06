@@ -232,12 +232,12 @@ namespace Porszivo
 
         public FieldType getFieldType(int x, int y)
         {
-            throw new System.NotImplementedException();
+            Room.getFieldType(x, y);
         }
 
         public void setFieldType(int x, int y, FieldType ft)
         {
-            throw new System.NotImplementedException();
+            Room.setFieldType(x ,y ,ft);
         }
     }
 }

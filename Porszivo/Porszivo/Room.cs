@@ -28,7 +28,38 @@ namespace Porszivo
              * RobotX RobotY
              * Szoba leírása MaxY sorban soronként MaxX karakter: 1 - akadály, 0 üres terület
              **/
-            
+
+            string[] lines = System.IO.File.ReadAllLines("room.txt");
+
+
+            // Pálya méretének beolvasása
+            string[] row = lines[0].Split(' ');
+            MaxX = Int32.Parse(row[0]);
+            MaxY = Int32.Parse(row[1]);
+
+            // Robot helyének beolvasása
+            row = lines[1].Split(' ');
+            RobotX = Int32.Parse(row[0]);
+            RobotY = Int32.Parse(row[1]);
+
+            // Pálya beolvasása
+            for(int i = 0; i < MaxY; i++)
+            {
+                row = lines[i + 2].Split(' ');
+                for(int j = 0; j < MaxX; j++)
+                {
+                    if(row[j] == "0")
+                    {
+                        room[i, j] = FieldType.DIRTY;
+                    }
+                    else
+                    {
+                        room[i, j] = FieldType.OBSTACLE;
+                    }
+                }
+            }
+
+            /*
             // Amíg ez nincs meg, létrehozok egy statikus pályát.
             MaxX = 30;
             MaxY = 30;
@@ -54,21 +85,49 @@ namespace Porszivo
             {
                 room[i, 15] = FieldType.OBSTACLE;
             }
+            */
         }
 
         public FieldType getFieldType(int x, int y)
         {
-            throw new System.NotImplementedException();
+            return room[x,y];
         }
 
         public Direction moveRobot(Direction direction)
         {
-            throw new System.NotImplementedException();
+            switch (direction)
+            {
+                case Direction.UP:
+                    if (RobotX + 1 <= room.GetLength(0) && room[RobotX + 1,RobotY] != FieldType.OBSTACLE)
+                    {
+                        RobotX += 1;
+                    }
+                    break;
+                case Direction.DOWN:
+                    if (RobotX - 1 >= 0 && room[RobotX - 1, RobotY] != FieldType.OBSTACLE)
+                    {
+                        RobotX -= 1;
+                    }
+                    break;
+                case Direction.RIGHT:
+                    if (RobotY + 1 <= room.GetLength(1) && room[RobotX, RobotY + 1] != FieldType.OBSTACLE)
+                    {
+                        RobotY += 1;
+                    }
+                    break;
+                case Direction.LEFT:
+                    if (RobotX - 1 >= 0 && room[RobotX, RobotY - 1] != FieldType.OBSTACLE)
+                    {
+                        RobotY -= 1;
+                    }
+                    break;
+            }        
+            return direction;
         }
 
-        public void setFieldType()
+        public void setFieldType(int x, int y, FieldType ft)
         {
-            throw new System.NotImplementedException();
+            room[x, y] = ft;
         }
     }
 }
