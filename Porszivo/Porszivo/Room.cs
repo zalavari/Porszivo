@@ -31,7 +31,10 @@ namespace Porszivo
              **/
 
 
-            string[] lines = System.IO.File.ReadAllLines(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory)).FullName).FullName).FullName + "/Room.txt");
+            string[] lines = System.IO.File.ReadAllLines(
+                Directory.GetParent(Directory.GetParent(Directory.GetParent(
+                    Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory)
+                    ).FullName).FullName).FullName + "/Room.txt");
             
             // Pálya méretének beolvasása
             string[] row = lines[0].Split(' ');
@@ -47,7 +50,7 @@ namespace Porszivo
             // Pálya beolvasása
             for(int i = 0; i < MaxY; i++)
             {
-                row = lines[i + 2].Split(' ');;
+                row = lines[i + 2].Split(' ');
                 for(int j = 0; j < MaxX; j++)
                 {
                     if(row[0][j] == '0')
