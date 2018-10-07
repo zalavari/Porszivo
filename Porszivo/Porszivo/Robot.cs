@@ -10,30 +10,35 @@ namespace Porszivo
         // robot sugara
         private int radius;
 
+        private FieldType[,] room;
         
         private Room Room { get; }
         
         // robot koordinátái - TODO: valószínűleg külön objektumban kellene tárolni őket 
-        private int positionX;
-        private int positionY;
+        public int positionX;
+        public int positionY;
+        public int roomMaxX;
+        public int roomMaxY;
 
-
-        public Robot() 
-        {
-            radius = 1;
-            positionX = 1;
-            positionY = 1;
-        }                   
-
+        
         private ProximitySensor ProximitySensor { get; set; }
 
         private DrivingUnit DrivingUnit { get; set; }
 
-        public Robot(ProximitySensor proximitySensor, DrivingUnit drivingUnit, Room room)
+        public Robot(ProximitySensor proximitySensor, DrivingUnit drivingUnit, Room room_)
         {
             ProximitySensor = proximitySensor;
             DrivingUnit = drivingUnit;
-            Room = room;
+            Room = room_;
+
+            room = new FieldType[room_.MaxX, room_.MaxY];
+            for (int i = 0; i < room_.MaxX; ++i) for (int j = 0; j < room_.MaxY; ++j) {room[i,j] = FieldType.UNKNOWN;}
+            roomMaxX = room_.MaxX;
+            roomMaxY = room_.MaxY;
+            
+            radius = 1;
+            positionX = 1;
+            positionY = 1;
         }
 
         private void scanRoom()
@@ -53,7 +58,7 @@ namespace Porszivo
                         setFieldType(xd, yd, FieldType.DIRTY);               
                 }
             }
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         /*
@@ -61,7 +66,8 @@ namespace Porszivo
          **/
         public void move() 
         {
-            Direction direction = Direction.DOWN;
+            Direction direction = new Direction();
+            scanRoom();
             bool moved = false;
             Random rnd = new Random(0);
             while (!moved)
@@ -77,8 +83,20 @@ namespace Porszivo
                 }
                 if (canMove(direction)) {
                     DrivingUnit.Move(direction);
+                    updatePosition(direction);
                     moved = true;
                 }
+            }
+        }
+
+        public void updatePosition(Direction direction) 
+        {
+            switch (direction)
+            {
+                case Direction.UP: positionY += 1; break;
+                case Direction.RIGHT: positionX += 1; break;
+                case Direction.DOWN: positionY -= 1; break;
+                case Direction.LEFT: positionX -= 1; break;
             }
         }
 
@@ -94,33 +112,17 @@ namespace Porszivo
             switch (direction)
             {
                 case Direction.UP:
-                    if (Room.MaxY < (positionY + 1)) 
+                    if (roomMaxY > (positionY + 1)) 
                     {
-                        if (Room.getFieldType(positionX, positionY + 1) == FieldType.UNKNOWN) 
+                        //if (Room.getFieldType(positionX, positionY + 1) == FieldType.OBSTACLE)
+                        if (room[positionX, positionY + 1] == FieldType.OBSTACLE)
                         {
-                            // Ha nem ismerjük még a kérdéses területet, akkor megnézzük mi van abban az irányban
-                            double distance = ProximitySensor.getClosestObject(Math.PI * 0.5);
-                            if (distance > 1) 
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
+                            return false;
                         }
                         else 
                         {
-                            if (Room.getFieldType(positionX, positionY + 1) == FieldType.OBSTACLE)
-                            {
-                                return false;
-                            }
-                            else 
-                            {
-                                return true;
-                            }
+                            return true;
                         }
-                        return true;
                     }
                     else 
                     {
@@ -128,32 +130,17 @@ namespace Porszivo
                     }
                     break;
                 case Direction.RIGHT:
-                    if (Room.MaxX < (positionX + 1)) 
+                    if (roomMaxX > (positionX + 1)) 
                     {
-                        if (Room.getFieldType(positionX + 1, positionY) == FieldType.UNKNOWN) 
+                        //if (Room.getFieldType(positionX + 1, positionY) == FieldType.OBSTACLE)
+                        if (room[positionX + 1, positionY] == FieldType.OBSTACLE)
                         {
-                            double distance = ProximitySensor.getClosestObject(Math.PI * 0);
-                            if (distance > 1) 
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
+                            return false;
                         }
                         else 
                         {
-                            if (Room.getFieldType(positionX + 1, positionY) == FieldType.OBSTACLE)
-                            {
-                                return false;
-                            }
-                            else 
-                            {
-                                return true;
-                            }
+                            return true;
                         }
-                        return true;
                     }
                     else 
                     {
@@ -163,30 +150,15 @@ namespace Porszivo
                 case Direction.DOWN:
                     if (0 < positionY) 
                     {
-                        if (Room.getFieldType(positionX, positionY - 1) == FieldType.UNKNOWN) 
+                        //if (Room.getFieldType(positionX, positionY - 1) == FieldType.OBSTACLE)
+                        if (room[positionX, positionY - 1] == FieldType.OBSTACLE)
                         {
-                            double distance = ProximitySensor.getClosestObject(Math.PI * 1.5);
-                            if (distance > 1) 
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
+                            return false;
                         }
                         else 
                         {
-                            if (Room.getFieldType(positionX, positionY - 1) == FieldType.OBSTACLE)
-                            {
-                                return false;
-                            }
-                            else 
-                            {
-                                return true;
-                            }
+                            return true;
                         }
-                        return true;
                     }
                     else 
                     {
@@ -196,30 +168,15 @@ namespace Porszivo
                 case Direction.LEFT:
                     if (0 < positionX - 1) 
                     {
-                        if (Room.getFieldType(positionX - 1, positionY) == FieldType.UNKNOWN) 
+                        //if (Room.getFieldType(positionX - 1, positionY) == FieldType.OBSTACLE)
+                        if (room[positionX - 1, positionY] == FieldType.OBSTACLE)
                         {
-                            double distance = ProximitySensor.getClosestObject(Math.PI * 1);
-                            if (distance > 1) 
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
+                            return false;
                         }
                         else 
                         {
-                            if (Room.getFieldType(positionX - 1, positionY) == FieldType.OBSTACLE)
-                            {
-                                return false;
-                            }
-                            else 
-                            {
-                                return true;
-                            }
+                            return true;
                         }
-                        return true;
                     }
                     else 
                     {
@@ -232,11 +189,13 @@ namespace Porszivo
 
         public FieldType getFieldType(int x, int y)
         {
+            return room[x, y];
             return Room.getFieldType(x, y);
         }
 
         public void setFieldType(int x, int y, FieldType ft)
         {
+            room[x, y] = ft;
             Room.setFieldType(x ,y ,ft);
         }
     }
