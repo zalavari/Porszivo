@@ -34,8 +34,8 @@ namespace Porszivo
             roomMaxY = room_.MaxY;
             
             radius = 1;
-            positionX = room_.MaxX;
-            positionY = room_.MaxY;
+            positionX = room_.RobotX;
+            positionY = room_.RobotY;
         }
 
         private void scanRoom()
