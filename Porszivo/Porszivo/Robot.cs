@@ -11,9 +11,7 @@ namespace Porszivo
         private int radius;
 
         private FieldType[,] room;
-        
-        private Room Room { get; }
-        
+                
         // robot koordinátái - TODO: valószínűleg külön objektumban kellene tárolni őket 
         public int positionX;
         public int positionY;
@@ -29,7 +27,6 @@ namespace Porszivo
         {
             ProximitySensor = proximitySensor;
             DrivingUnit = drivingUnit;
-            Room = room_;
 
             room = new FieldType[room_.MaxX, room_.MaxY];
             for (int i = 0; i < room_.MaxX; ++i) for (int j = 0; j < room_.MaxY; ++j) {room[i,j] = FieldType.UNKNOWN;}
@@ -37,12 +34,26 @@ namespace Porszivo
             roomMaxY = room_.MaxY;
             
             radius = 1;
-            positionX = 1;
-            positionY = 1;
+            positionX = room_.MaxX;
+            positionY = room_.MaxY;
         }
 
         private void scanRoom()
         {
+            int visualRange = 10;
+            for (int i = 0; i < roomMaxX; i++)
+                for (int j = 0; j < roomMaxY; j++)
+                {
+                    if ((i - positionX) * (i - positionX) + (j - positionY) * (j - positionY) < visualRange * visualRange)
+                    {
+                        if (getFieldType(i, j) == FieldType.UNKNOWN)
+                            setFieldType(i, j, ProximitySensor.getFieldType(i, j));
+
+                    }
+                }
+
+            //Ez egyelore kuka, talán késobb visszatérünk rá.
+            /*
             double delta = 0.1;
             for (double angle = 0; angle < Math.PI/2; angle+=delta)
             {
@@ -58,8 +69,10 @@ namespace Porszivo
                         setFieldType(xd, yd, FieldType.DIRTY);               
                 }
             }
-            //throw new System.NotImplementedException();
+            throw new System.NotImplementedException();
+            */
         }
+
 
         /*
          * A robotnak lépnie kell. A rendelkezésre álló adatok alapján eldönti merre akar lépni, és végül a DrivingUnit-on keresztül lép.
@@ -190,13 +203,11 @@ namespace Porszivo
         public FieldType getFieldType(int x, int y)
         {
             return room[x, y];
-            return Room.getFieldType(x, y);
         }
 
         public void setFieldType(int x, int y, FieldType ft)
         {
             room[x, y] = ft;
-            Room.setFieldType(x ,y ,ft);
         }
     }
 }

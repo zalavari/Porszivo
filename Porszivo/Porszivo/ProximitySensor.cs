@@ -36,5 +36,16 @@ namespace Porszivo
         {
             Room = room;
         }
+
+        public FieldType getFieldType(int x, int y)
+        {
+            FieldType ft = Room.getFieldType(x, y);
+
+            //A robotot az akadályról értesítjük.
+            //Ha nincs akadály, akkor a látószenzor nem tudja, hogy milyen a mező, tehát piszkosat mond
+            //Ha a robot már járt ott, és valójában tiszta, azt neki kell tudnia
+            if (ft == FieldType.OBSTACLE) return FieldType.OBSTACLE;
+            else return FieldType.DIRTY;
+        }
     }
 }
