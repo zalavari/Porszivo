@@ -48,18 +48,17 @@ namespace Porszivo
             RobotY = Int32.Parse(row[1]);
 
             // Pálya beolvasása
-            for(int i = 0; i < MaxY; i++)
+            for(int i = 0; i < MaxX; i++)
             {
-                row = lines[i + 2].Split(' ');
-                for(int j = 0; j < MaxX; j++)
+                for(int j = 0; j < MaxY; j++)
                 {
-                    if(row[0][j] == '0')
+                    if(lines[j+2][j] == '0')
                     {
-                        room[i, j] = FieldType.DIRTY;
+                        room[i, MaxY - j] = FieldType.DIRTY;
                     }
                     else
                     {
-                        room[i, j] = FieldType.OBSTACLE;
+                        room[i, MaxY - j] = FieldType.OBSTACLE;
                     }
                 }
             }
