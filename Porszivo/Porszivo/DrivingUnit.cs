@@ -7,8 +7,7 @@ namespace Porszivo
 {
     public class DrivingUnit
     {
-        private Room Room { get; }
-        
+        private Room Room { get; }        
 
         public DrivingUnit(Room room)
         {
@@ -17,7 +16,7 @@ namespace Porszivo
 
         public void Move(Direction direction)
         {
-            throw new System.NotImplementedException();
+            Room.moveRobot(direction);
         }
     }
 }

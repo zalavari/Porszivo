@@ -52,13 +52,13 @@ namespace Porszivo
             {
                 for(int j = 0; j < MaxY; j++)
                 {
-                    if(lines[j+2][j] == '0')
+                    if(lines[j+2][i] == '0')
                     {
-                        room[i, MaxY - j] = FieldType.DIRTY;
+                        room[i, j] = FieldType.DIRTY;
                     }
                     else
                     {
-                        room[i, MaxY - j] = FieldType.OBSTACLE;
+                        room[i, j] = FieldType.OBSTACLE;
                     }
                 }
             }
@@ -73,25 +73,25 @@ namespace Porszivo
         {
             switch (direction)
             {
-                case Direction.UP:
+                case Direction.RIGHT:
                     if (RobotX + 1 <= room.GetLength(0) && room[RobotX + 1,RobotY] != FieldType.OBSTACLE)
                     {
                         RobotX += 1;
                     }
                     break;
-                case Direction.DOWN:
+                case Direction.LEFT:
                     if (RobotX - 1 >= 0 && room[RobotX - 1, RobotY] != FieldType.OBSTACLE)
                     {
                         RobotX -= 1;
                     }
                     break;
-                case Direction.RIGHT:
+                case Direction.DOWN:
                     if (RobotY + 1 <= room.GetLength(1) && room[RobotX, RobotY + 1] != FieldType.OBSTACLE)
                     {
                         RobotY += 1;
                     }
                     break;
-                case Direction.LEFT:
+                case Direction.UP:
                     if (RobotX - 1 >= 0 && room[RobotX, RobotY - 1] != FieldType.OBSTACLE)
                     {
                         RobotY -= 1;

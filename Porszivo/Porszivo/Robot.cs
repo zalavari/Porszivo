@@ -106,9 +106,9 @@ namespace Porszivo
         {
             switch (direction)
             {
-                case Direction.UP: positionY += 1; break;
+                case Direction.UP: positionY -= 1; break;
                 case Direction.RIGHT: positionX += 1; break;
-                case Direction.DOWN: positionY -= 1; break;
+                case Direction.DOWN: positionY += 1; break;
                 case Direction.LEFT: positionX -= 1; break;
             }
         }
@@ -124,7 +124,7 @@ namespace Porszivo
             //    i = (posX - robotRadius)-tól (posX + robotRadius)-ig minden mezőn posX - i mezővel előre nézünk
             switch (direction)
             {
-                case Direction.UP:
+                case Direction.DOWN:
                     if (roomMaxY > (positionY + 1)) 
                     {
                         //if (Room.getFieldType(positionX, positionY + 1) == FieldType.OBSTACLE)
@@ -160,7 +160,7 @@ namespace Porszivo
                         return false;
                     }
                     break;
-                case Direction.DOWN:
+                case Direction.UP:
                     if (0 < positionY) 
                     {
                         //if (Room.getFieldType(positionX, positionY - 1) == FieldType.OBSTACLE)
