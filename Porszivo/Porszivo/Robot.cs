@@ -18,6 +18,7 @@ namespace Porszivo
         public int roomMaxX;
         public int roomMaxY;
 
+        private RandomPathChooserAlgorithm algorithm;
         
         private ProximitySensor ProximitySensor { get; set; }
 
@@ -36,41 +37,21 @@ namespace Porszivo
             radius = 1;
             positionX = room_.RobotX;
             positionY = room_.RobotY;
+
+            algorithm = new RandomPathChooserAlgorithm(this);
         }
 
         private void scanRoom()
         {
-            int visualRange = 10;
+            ProximitySensor.scanRoom();
+
             for (int i = 0; i < roomMaxX; i++)
                 for (int j = 0; j < roomMaxY; j++)
                 {
-                    if ((i - positionX) * (i - positionX) + (j - positionY) * (j - positionY) < visualRange * visualRange)
-                    {
-                        if (getFieldType(i, j) == FieldType.UNKNOWN)
-                            setFieldType(i, j, ProximitySensor.getFieldType(i, j));
 
-                    }
+                    if (getFieldType(i, j) == FieldType.UNKNOWN)
+                        setFieldType(i, j, ProximitySensor.getFieldType(i, j));
                 }
-
-            //Ez egyelore kuka, talán késobb visszatérünk rá.
-            /*
-            double delta = 0.1;
-            for (double angle = 0; angle < Math.PI/2; angle+=delta)
-            {
-                double distance=ProximitySensor.getClosestObject(angle);
-                int xd = 1, yd = 1;
-                double tang = Math.Tan(angle);
-                while (xd * xd + yd * yd < distance * distance)
-                {
-                    if (yd / xd > tang) xd++;
-                    else yd++;
-
-                    if (getFieldType(xd, yd) == FieldType.UNKNOWN)
-                        setFieldType(xd, yd, FieldType.DIRTY);               
-                }
-            }
-            throw new System.NotImplementedException();
-            */
         }
 
 
@@ -79,27 +60,13 @@ namespace Porszivo
          **/
         public void move() 
         {
-            Direction direction = new Direction();
+            setFieldType(positionX, positionY, FieldType.CLEAN);
+            
             scanRoom();
-            bool moved = false;
-            Random rnd = new Random(0);
-            while (!moved)
-            {
-                // véletlen irány generálása
-                int nextDirection = rnd.Next(0, 3); 
-                switch (nextDirection)
-                {
-                    case 0: direction = Direction.UP; break;
-                    case 1: direction = Direction.RIGHT; break;
-                    case 2: direction = Direction.DOWN; break;
-                    case 3: direction = Direction.LEFT; break;
-                }
-                if (canMove(direction)) {
-                    DrivingUnit.Move(direction);
-                    updatePosition(direction);
-                    moved = true;
-                }
-            }
+            Direction direction = algorithm.move();
+
+            DrivingUnit.Move(direction);
+            updatePosition(direction);
         }
 
         public void updatePosition(Direction direction) 
@@ -113,92 +80,7 @@ namespace Porszivo
             }
         }
 
-        /*
-         * Képes-e lépni a robot egy adott irányba.
-         **/
-        private bool canMove(Direction direction)
-        {
-            // Egyelőre csak az egyszerű esetet nézzük meg, ha a robot 1 egység nagy --> csak az előtte álló mező érdekes
-            // TODO: ki kell egészíteni, hogy a teljes porszívó előtti területet vizsgálja
-            //    erre ötlet (ha fölfelé megy): 
-            //    i = (posX - robotRadius)-tól (posX + robotRadius)-ig minden mezőn posX - i mezővel előre nézünk
-            switch (direction)
-            {
-                case Direction.DOWN:
-                    if (roomMaxY > (positionY + 1)) 
-                    {
-                        //if (Room.getFieldType(positionX, positionY + 1) == FieldType.OBSTACLE)
-                        if (room[positionX, positionY + 1] == FieldType.OBSTACLE)
-                        {
-                            return false;
-                        }
-                        else 
-                        {
-                            return true;
-                        }
-                    }
-                    else 
-                    {
-                        return false;
-                    }
-                    break;
-                case Direction.RIGHT:
-                    if (roomMaxX > (positionX + 1)) 
-                    {
-                        //if (Room.getFieldType(positionX + 1, positionY) == FieldType.OBSTACLE)
-                        if (room[positionX + 1, positionY] == FieldType.OBSTACLE)
-                        {
-                            return false;
-                        }
-                        else 
-                        {
-                            return true;
-                        }
-                    }
-                    else 
-                    {
-                        return false;
-                    }
-                    break;
-                case Direction.UP:
-                    if (0 < positionY) 
-                    {
-                        //if (Room.getFieldType(positionX, positionY - 1) == FieldType.OBSTACLE)
-                        if (room[positionX, positionY - 1] == FieldType.OBSTACLE)
-                        {
-                            return false;
-                        }
-                        else 
-                        {
-                            return true;
-                        }
-                    }
-                    else 
-                    {
-                        return false;
-                    }
-                    break;
-                case Direction.LEFT:
-                    if (0 < positionX - 1) 
-                    {
-                        //if (Room.getFieldType(positionX - 1, positionY) == FieldType.OBSTACLE)
-                        if (room[positionX - 1, positionY] == FieldType.OBSTACLE)
-                        {
-                            return false;
-                        }
-                        else 
-                        {
-                            return true;
-                        }
-                    }
-                    else 
-                    {
-                        return false;
-                    }
-                    break;
-            }
-            throw new NotImplementedException();
-        }
+      
 
         public FieldType getFieldType(int x, int y)
         {

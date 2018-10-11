@@ -7,45 +7,75 @@ namespace Porszivo
 {
     public class ProximitySensor
     {
+        public const int maxRange = 10;
         private Room Room { get; }
 
-        public double getClosestObject(double angle)
-        {
-            double tang = Math.Tan(angle);
-            int maxRange=10;
-            int x0=Room.RobotX;
-            int y0=Room.RobotY;
-            int x1 = (int) Math.Round(Math.Cos(angle)*maxRange);
-            int y1 = (int) Math.Round(Math.Sin(angle)*maxRange);
-            
-            //Legfeljebb csak az egyik síknegyeden működik egyelőre
-            int xd = 1, yd = 1;
-            while (xd*xd+yd*yd<maxRange*maxRange)
-            {
-                if (yd / xd > tang) xd++;
-                else yd++;
+        private FieldType[,] roomMtx;
 
-                FieldType ft = Room.getFieldType(x0 + xd, y0 + yd);
-                if (ft == FieldType.OBSTACLE)
-                    return (Math.Sqrt(xd * xd + yd * yd));
+        public void scanRoom()
+        {
+
+            double delta = 0.01;
+            for (double angle = 0; angle < 2 * Math.PI; angle += delta)
+            {
+
+                double tang = Math.Tan(angle);
+                int x0 = Room.RobotX;
+                int y0 = Room.RobotY;
+                int x1 = (int)Math.Round(Math.Cos(angle) * maxRange);
+                int y1 = (int)Math.Round(Math.Sin(angle) * maxRange);
+                int x = 0, y = 0;
+                int iranyX = Math.Sign(x1);
+                int iranyY = Math.Sign(y1);
+                x1 = Math.Abs(x1);
+                y1 = Math.Abs(y1);
+                bool endMemory = false;
+                while (!endMemory && (x < x1 || y < y1))
+                {
+                    double xRatio = (double)x / x1;
+                    double yRatio = (double)y / y1;
+                    if (xRatio > yRatio)
+                        y++;
+                    else
+                        x++;
+
+
+                    if (x0 + x * iranyX < 0 || x0 + x * iranyX >= Room.MaxX || y0 + y * iranyY < 0 || y0 + y * iranyY >= Room.MaxY)
+                        endMemory = true;
+                    else
+                    {
+
+                        FieldType ft =  Room.getFieldType(x0 + x * iranyX, y0 + y * iranyY);
+                        if (ft == FieldType.OBSTACLE)
+                        {
+                            endMemory = true;
+                            roomMtx[x0 + x * iranyX, y0 + y * iranyY] = ft;
+                        }
+                        else
+                            roomMtx[x0 + x * iranyX, y0 + y * iranyY] = FieldType.DIRTY;
+
+                    }
+                }
             }
-            return (Math.Sqrt(xd * xd + yd * yd));
+
+
         }
 
         public ProximitySensor(Room room)
         {
             Room = room;
+
+            roomMtx = new FieldType[room.MaxX, room.MaxY];
+            for (int i = 0; i < room.MaxX; ++i) for (int j = 0; j < room.MaxY; ++j) { roomMtx[i, j] = FieldType.UNKNOWN; }
+
         }
 
         public FieldType getFieldType(int x, int y)
         {
-            FieldType ft = Room.getFieldType(x, y);
+            return roomMtx[x, y];
 
-            //A robotot az akadályról értesítjük.
-            //Ha nincs akadály, akkor a látószenzor nem tudja, hogy milyen a mező, tehát piszkosat mond
-            //Ha a robot már járt ott, és valójában tiszta, azt neki kell tudnia
-            if (ft == FieldType.OBSTACLE) return FieldType.OBSTACLE;
-            else return FieldType.DIRTY;
         }
+
+
     }
 }
