@@ -19,6 +19,7 @@ namespace Porszivo
         public int roomMaxY;
 
         private RandomPathChooserAlgorithm algorithm;
+        private DepthFirstSearchPathChooserAlgorithm algorithm2;
         
         private ProximitySensor ProximitySensor { get; set; }
 
@@ -39,6 +40,7 @@ namespace Porszivo
             positionY = room_.RobotY;
 
             algorithm = new RandomPathChooserAlgorithm(this);
+            algorithm2 = new DepthFirstSearchPathChooserAlgorithm(this);
         }
 
         private void scanRoom()
@@ -63,7 +65,7 @@ namespace Porszivo
             setFieldType(positionX, positionY, FieldType.CLEAN);
             
             scanRoom();
-            Direction direction = algorithm.move();
+            Direction direction = algorithm2.move();
 
             DrivingUnit.Move(direction);
             updatePosition(direction);
@@ -77,6 +79,7 @@ namespace Porszivo
                 case Direction.RIGHT: positionX += 1; break;
                 case Direction.DOWN: positionY += 1; break;
                 case Direction.LEFT: positionX -= 1; break;
+                case Direction.STAY: break;
             }
         }
 
