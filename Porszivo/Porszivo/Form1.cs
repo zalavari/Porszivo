@@ -28,7 +28,6 @@ namespace Porszivo
             DrivingUnit drivingUnit = new DrivingUnit(room);
 
             robot = new Robot(prSens, drivingUnit, room);
-            Console.WriteLine("asd");
             Thread t = new Thread(new ThreadStart(runSimulation));
             t.IsBackground = true;
             t.Start();
@@ -36,7 +35,7 @@ namespace Porszivo
 
         private void runSimulation()
         {
-            const int tickTime = 1000;
+            const int tickTime = 200;
 
             // Később lehet feltételhez kötni, pl szoba x %-a ki van-e takarítva
             while (true) 
