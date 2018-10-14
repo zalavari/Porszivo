@@ -26,6 +26,7 @@ namespace Porszivo
             room = new Room("Room.txt");
             ProximitySensor prSens = new ProximitySensor(room);
             DrivingUnit drivingUnit = new DrivingUnit(room);
+            this.DoubleBuffered = true;
 
             robot = new Robot(prSens, drivingUnit, room);
             Thread t = new Thread(new ThreadStart(runSimulation));
@@ -35,7 +36,7 @@ namespace Porszivo
 
         private void runSimulation()
         {
-            const int tickTime = 200;
+            const int tickTime = 20;
 
             // Később lehet feltételhez kötni, pl szoba x %-a ki van-e takarítva
             while (true) 
