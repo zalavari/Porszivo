@@ -7,18 +7,15 @@ using System.Diagnostics;
 
 namespace Porszivo
 {
-    class RandomPathChooserAlgorithm
+    class RandomPathChooserAlgorithm : Algorithm
     {
-        readonly Robot robot;
-
         Random rnd = new Random(0);
 
-        public RandomPathChooserAlgorithm(Robot robot)
+        public RandomPathChooserAlgorithm(Robot robot) : base(robot)
         {
-            this.robot = robot;
         }
 
-        public Direction move()
+        public override Direction move()
         {
             Direction direction = new Direction();
             bool moved = false;

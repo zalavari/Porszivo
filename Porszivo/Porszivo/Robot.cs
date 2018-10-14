@@ -18,8 +18,8 @@ namespace Porszivo
         public int roomMaxX;
         public int roomMaxY;
 
-        private RandomPathChooserAlgorithm algorithm;
-        private DepthFirstSearchPathChooserAlgorithm algorithm2;
+        private Algorithm algorithm1;
+        private Algorithm algorithm2;
         
         private ProximitySensor ProximitySensor { get; set; }
 
@@ -39,7 +39,7 @@ namespace Porszivo
             positionX = room_.RobotX;
             positionY = room_.RobotY;
 
-            algorithm = new RandomPathChooserAlgorithm(this);
+            algorithm1 = new RandomPathChooserAlgorithm(this);
             algorithm2 = new DepthFirstSearchPathChooserAlgorithm(this);
         }
 

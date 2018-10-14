@@ -7,19 +7,16 @@ using System.Diagnostics;
 
 namespace Porszivo
 {
-    class DepthFirstSearchPathChooserAlgorithm
+    class DepthFirstSearchPathChooserAlgorithm : Algorithm
     {
-        readonly Robot robot;
-
         //Itt tárolja, hogy merre lépett
         Stack<Direction> directionStack = new Stack<Direction>();
 
-        public DepthFirstSearchPathChooserAlgorithm(Robot robot)
+        public DepthFirstSearchPathChooserAlgorithm(Robot robot) : base(robot)
         {
-            this.robot = robot;
         }
 
-        public Direction move()
+        public override Direction move()
         {
             Direction direction = Direction.STAY;
 
