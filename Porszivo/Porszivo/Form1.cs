@@ -30,6 +30,7 @@ namespace Porszivo
             robot = new Robot(prSens, drivingUnit, room);
             Console.WriteLine("asd");
             Thread t = new Thread(new ThreadStart(runSimulation));
+            t.IsBackground = true;
             t.Start();
         }
 
