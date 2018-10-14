@@ -34,7 +34,7 @@ namespace Porszivo
             string[] lines = System.IO.File.ReadAllLines(
                 Directory.GetParent(Directory.GetParent(Directory.GetParent(
                     Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory)
-                    ).FullName).FullName).FullName + "/Room.txt");
+                    ).FullName).FullName).FullName + "/" + input);
             
             // Pálya méretének beolvasása
             string[] row = lines[0].Split(' ');

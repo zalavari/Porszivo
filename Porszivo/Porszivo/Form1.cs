@@ -19,6 +19,7 @@ namespace Porszivo
         {
             InitializeComponent();
             InitializeSimulation();
+            this.DoubleBuffered = true;
         }
 
         private void InitializeSimulation()
@@ -26,7 +27,6 @@ namespace Porszivo
             room = new Room("Room.txt");
             ProximitySensor prSens = new ProximitySensor(room);
             DrivingUnit drivingUnit = new DrivingUnit(room);
-            this.DoubleBuffered = true;
 
             robot = new Robot(prSens, drivingUnit, room);
             Thread t = new Thread(new ThreadStart(runSimulation));
